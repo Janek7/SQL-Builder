@@ -1,6 +1,8 @@
-package de.janek.statementElements.select;
+package de.janek.components.select;
 
-public class From {
+import de.janek.components.Component;
+
+public class From extends Component{
 
     private String table;
     private String alias;
@@ -14,9 +16,8 @@ public class From {
         this.alias = alias;
     }
 
-    //in basis klasse
+    @Override
     public String getString() {
-        return null;
+        return "FROM " + table + (alias != null ? " " + alias : "");
     }
-
 }

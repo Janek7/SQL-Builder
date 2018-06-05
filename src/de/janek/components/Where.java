@@ -1,6 +1,6 @@
-package de.janek.statementElements;
+package de.janek.components;
 
-public class Where {
+public class Where extends Component {
 
     private String attr;
     private Object value;
@@ -10,12 +10,8 @@ public class Where {
         this.value = value;
     }
 
-    public String getAttr() {
-        return attr;
+    @Override
+    public String getString() {
+        return attr + " = '" + value + "'";
     }
-
-    public Object getValue() {
-        return value;
-    }
-
 }

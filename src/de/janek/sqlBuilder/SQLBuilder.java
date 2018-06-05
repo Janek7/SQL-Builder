@@ -1,7 +1,7 @@
 package de.janek.sqlBuilder;
 
 import de.janek.DataBaseConnection;
-import de.janek.exceptions.MissingStatementElementException;
+import de.janek.exceptions.SQLStatementException;
 
 import java.sql.SQLException;
 
@@ -13,8 +13,6 @@ public abstract class SQLBuilder {
         this.dataBaseConnection = dataBaseConnection;
     }
 
-    public abstract String createStatement() throws MissingStatementElementException;
-
-    public abstract void runStatement() throws SQLException;
+    public abstract String createStatement() throws SQLStatementException;
 
 }

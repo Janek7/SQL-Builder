@@ -1,10 +1,10 @@
 package de.janek;
 
+import de.janek.components.select.OrderType;
+import de.janek.exceptions.SQLStatementException;
 import de.janek.sqlBuilder.SelectBuilder;
-import de.janek.statementElements.Where;
-import de.janek.statementElements.select.From;
-import de.janek.statementElements.select.Select;
 
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 
 public class Test {
@@ -14,22 +14,24 @@ public class Test {
     public static void main(String[] args) {
 
         try {
-            dataBaseConnection = new DataBaseConnection("", "", "", "");
-        } catch (SQLException e) {
+            dataBaseConnection = new DataBaseConnection("config.properties");
+        } catch (SQLException | FileNotFoundException e) {
             e.printStackTrace();
         }
 
-
+        testSelect();
 
     }
 
     private static void testSelect() {
 
         SelectBuilder selectBuilder = new SelectBuilder(dataBaseConnection);
-        selectBuilder
-                .select(new Select("name"))
-                .from(new From("table"))
-                .where(new Where("id",1));
+        selectBuilder.select("name").from("table").where("id", 3).orderBy("name", OrderType.ASC);
+        try {
+            System.out.println(selectBuilder.createStatement());
+        } catch (SQLStatementException e) {
+            e.printStackTrace();
+        }
 
     }
 

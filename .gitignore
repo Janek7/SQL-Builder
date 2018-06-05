@@ -28,3 +28,6 @@ SQL-Builder.iml
 
 # Libaries
 lib
+
+# Other
+config.properties

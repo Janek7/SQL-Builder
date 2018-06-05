@@ -1,13 +1,11 @@
-package de.janek.statementElements.select;
+package de.janek.components.select;
 
-public class Select {
+import de.janek.components.Component;
+
+public class Select extends Component {
 
     private String attr;
     private String as;
-
-    public Select(String attr) {
-        this(attr, null);
-    }
 
     public Select(String attr, String as) {
         this.attr = attr;
@@ -15,8 +13,7 @@ public class Select {
     }
 
     @Override
-    public String toString() {
+    public String getString() {
         return attr + (as != null ? " as " + as : "");
     }
-
 }
