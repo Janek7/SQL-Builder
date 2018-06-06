@@ -1,11 +1,6 @@
 package de.janek;
 
-import de.janek.exceptions.SQLStatementException;
-import de.janek.sqlBuilder.SQLBuilder;
-import de.janek.sqlBuilder.SelectBuilder;
-
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
@@ -13,6 +8,8 @@ import java.util.Properties;
 
 /**
  * A Connection to a database
+ *
+ * @author Janek7
  */
 public class DataBaseConnection {
 
@@ -30,14 +27,12 @@ public class DataBaseConnection {
      * the config must provide the properties 'server', 'user', 'password' and 'scheme'
      *
      * @param configPath path to config file
-     * @throws FileNotFoundException config file error
      * @throws SQLException          sql connection error
      */
-    public DataBaseConnection(String configPath) throws SQLException, FileNotFoundException {
+    public DataBaseConnection(String configPath) throws SQLException {
 
         Properties prop = new Properties();
-        try {
-            InputStream input = new FileInputStream(configPath);
+        try (InputStream input = new FileInputStream(configPath)) {
             prop.load(input);
             createConn(prop.getProperty("server"),
                     prop.getProperty("user"),
@@ -73,19 +68,14 @@ public class DataBaseConnection {
     }
 
     /**
-     * executes a sql statement from a sql builder
+     * creates a prepared statement
      *
-     * @param sqlBuilder sql builder (statement)
-     * @return ResultSet result of statement execution
+     * @param statement statement as string
+     * @return prepared statement
+     * @throws SQLException sql error
      */
-    public ResultSet execute(SQLBuilder sqlBuilder) throws SQLStatementException, SQLException {
-
-        PreparedStatement pStmt = conn.prepareStatement(sqlBuilder.createStatement());
-        if (sqlBuilder instanceof SelectBuilder) {
-            return pStmt.executeQuery();
-        }
-        return null;
-
+    public PreparedStatement prepareStatement(String statement) throws SQLException {
+        return conn.prepareStatement(statement);
     }
 
     /**

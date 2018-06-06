@@ -1,5 +1,10 @@
 package de.janek.components;
 
+/**
+ * Symbolizes a component / part of a mysql statement
+ *
+ * @author Janek7
+ */
 public abstract class Component {
 
     /**
