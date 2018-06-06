@@ -34,4 +34,11 @@ public final class From extends Component {
         return "FROM " + table + (alias != null ? " " + alias : "");
     }
 
+    public String getTable() {
+        return table;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
 }

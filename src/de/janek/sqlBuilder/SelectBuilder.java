@@ -1,12 +1,9 @@
 package de.janek.sqlBuilder;
 
 import de.janek.DataBaseConnection;
-import de.janek.components.select.OrderType;
+import de.janek.components.select.*;
 import de.janek.SQLStatementException;
 import de.janek.components.Where;
-import de.janek.components.select.From;
-import de.janek.components.select.OrderBy;
-import de.janek.components.select.Select;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,6 +20,7 @@ public class SelectBuilder extends SQLBuilder {
     private List<Select> selects = new ArrayList<>();
     private From from;
     private List<Where> wheres = new ArrayList<>();
+    private List<Join> joins = new ArrayList<>();
     private OrderBy orderBy;
 
     /**
@@ -51,6 +49,11 @@ public class SelectBuilder extends SQLBuilder {
         if (from != null) statement.append(from.getString()).append(" ");
         else throw new SQLStatementException("please add a from statement");
 
+        //JOIN
+        if (joins.size() > 0) {
+            joins.forEach(join -> statement.append(join.getString()).append(" "));
+        }
+
         //WHERE
         if (wheres.size() > 0)
             wheres.forEach(where ->
@@ -62,7 +65,7 @@ public class SelectBuilder extends SQLBuilder {
             boolean orderByInSelect = false;
             for (Select select : selects)
                 if (select.getAttr().equalsIgnoreCase(orderBy.getAttr())) orderByInSelect = true;
-            if (!orderByInSelect) throw new SQLStatementException("order by element is not part of SELECT ...");
+            if (!orderByInSelect) throw new SQLStatementException("order by element is not part of SELECT");
             statement.append(orderBy.getString());
         }
 
@@ -80,6 +83,7 @@ public class SelectBuilder extends SQLBuilder {
         final List<Object> whereValues = new ArrayList<>();
         wheres.forEach(where -> whereValues.add(where.getValue()));
         setPreparedStatementParameters(pStmt, whereValues);
+        System.out.println(pStmt);
         return pStmt.executeQuery();
 
     }
@@ -132,6 +136,28 @@ public class SelectBuilder extends SQLBuilder {
     public SelectBuilder where(String attr, Object value) {
         this.wheres.add(new Where(attr, value));
         return this;
+    }
+
+    /**
+     * adds a table join between an existing table and a new one
+     *
+     * @param joinType      @see {@link Join#joinType}
+     * @param ohterTable    @see {@link Join#otherTable}
+     * @param alias         @see {@link Join#otherTable}
+     * @param joinCondition @see {@link Join#joinCondition}
+     *                      must match to the name / alias of the tables
+     * @return this
+     */
+    public SelectBuilder join(JoinType joinType, String ohterTable, String alias, String joinCondition) {
+        this.joins.add(new Join(joinType, new From(ohterTable, alias), joinCondition));
+        return this;
+    }
+
+    /**
+     * @see SelectBuilder#join(JoinType, String, String, String)
+     */
+    public SelectBuilder join(JoinType joinType, String ohterTable, String joinCondition) {
+        return join(joinType, ohterTable, null, joinCondition);
     }
 
     /**
