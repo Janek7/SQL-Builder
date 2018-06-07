@@ -28,15 +28,7 @@ public abstract class SQLBuilder {
     }
 
     /**
-     * creates the sql statement from added components
-     *
-     * @return statement as string
-     * @throws SQLStatementException statement error
-     */
-    public abstract String createStatement() throws SQLStatementException;
-
-    /**
-     * executes the statement and provides the result as a ResultSet
+     * creates and executes the statement and provides the result as a ResultSet
      *
      * @return resultset
      * @throws SQLStatementException statement error
@@ -56,6 +48,7 @@ public abstract class SQLBuilder {
         int i = 1;
         for (Object value : values) {
             pStmt.setObject(i, value);
+            i++;
         }
 
     }

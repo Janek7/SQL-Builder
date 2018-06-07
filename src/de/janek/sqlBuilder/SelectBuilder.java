@@ -31,10 +31,10 @@ public class SelectBuilder extends SQLBuilder {
     }
 
     /**
-     * @see SQLBuilder#createStatement()
+     * @see SQLBuilder#execute()
      */
     @Override
-    public String createStatement() throws SQLStatementException {
+    public ResultSet execute() throws SQLStatementException, SQLException {
 
         final StringBuilder statement = new StringBuilder("SELECT ");
 
@@ -55,9 +55,12 @@ public class SelectBuilder extends SQLBuilder {
         }
 
         //WHERE
+        List<Object> whereValues = new ArrayList<>();
         if (wheres.size() > 0)
-            wheres.forEach(where ->
-                    statement.append(where == wheres.get(0) ? "WHERE " : "AND ").append(where.getString()).append(" = ? ")
+            wheres.forEach(where -> {
+                        statement.append(where == wheres.get(0) ? "WHERE " : "AND ").append(where.getString()).append(" = ? ");
+                        whereValues.add(where.getValue());
+                    }
             );
 
         //ORDER BY
@@ -65,25 +68,16 @@ public class SelectBuilder extends SQLBuilder {
             boolean orderByInSelect = false;
             for (Select select : selects)
                 if (select.getAttr().equalsIgnoreCase(orderBy.getAttr())) orderByInSelect = true;
-            if (!orderByInSelect) throw new SQLStatementException("order by element is not part of SELECT");
+            if (!orderByInSelect) {
+                if (selects.size() != 0) throw new SQLStatementException("order by element is not part of SELECT");
+            }
             statement.append(orderBy.getString());
         }
 
-        return statement.toString();
-
-    }
-
-    /**
-     * @see SQLBuilder#execute()
-     */
-    @Override
-    public ResultSet execute() throws SQLStatementException, SQLException {
-
-        pStmt = dataBaseConnection.prepareStatement(createStatement());
-        final List<Object> whereValues = new ArrayList<>();
-        wheres.forEach(where -> whereValues.add(where.getValue()));
+        pStmt = dataBaseConnection.prepareStatement(statement.toString());
         setPreparedStatementParameters(pStmt, whereValues);
         System.out.println(pStmt);
+
         return pStmt.executeQuery();
 
     }
