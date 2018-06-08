@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Janek7
  */
-public class SelectBuilder extends SQLBuilder {
+public final class SelectBuilder extends SQLBuilder {
 
     private List<Select> selects = new ArrayList<>();
     private From from;
@@ -58,7 +58,7 @@ public class SelectBuilder extends SQLBuilder {
         List<Object> whereValues = new ArrayList<>();
         if (wheres.size() > 0)
             wheres.forEach(where -> {
-                        statement.append(where == wheres.get(0) ? "WHERE " : "AND ").append(where.getString()).append(" = ? ");
+                        statement.append(where == wheres.get(0) ? "WHERE " : "AND ").append(where.getColumn()).append(" = ? ");
                         whereValues.add(where.getValue());
                     }
             );
@@ -67,7 +67,7 @@ public class SelectBuilder extends SQLBuilder {
         if (orderBy != null) {
             boolean orderByInSelect = false;
             for (Select select : selects)
-                if (select.getAttr().equalsIgnoreCase(orderBy.getAttr())) orderByInSelect = true;
+                if (select.getColumn().equalsIgnoreCase(orderBy.getColumn())) orderByInSelect = true;
             if (!orderByInSelect) {
                 if (selects.size() != 0) throw new SQLStatementException("order by element is not part of SELECT");
             }
@@ -85,27 +85,27 @@ public class SelectBuilder extends SQLBuilder {
     /**
      * adds a select component
      *
-     * @param attr @see {@link Select#attr}
-     * @param as   @see {@link Select#as}
+     * @param column {@link Select#Select(String, String)}
+     * @param as   {@link Select#Select(String, String)}
      * @return this
      */
-    public SelectBuilder select(String attr, String as) {
-        selects.add(new Select(attr, as));
+    public SelectBuilder select(String column, String as) {
+        selects.add(new Select(column, as));
         return this;
     }
 
     /**
      * @see SelectBuilder#select(String, String)
      */
-    public SelectBuilder select(String attr) {
-        return select(attr, null);
+    public SelectBuilder select(String column) {
+        return select(column, null);
     }
 
     /**
      * adds the from component
      *
-     * @param table @see {@link From#table}
-     * @param alias @see {@link From#alias}
+     * @param table {@link From#From(String, String)}
+     * @param alias {@link From#From(String, String)}
      * @return this
      */
     public SelectBuilder from(String table, String alias) {
@@ -123,22 +123,22 @@ public class SelectBuilder extends SQLBuilder {
     /**
      * adds a WHERE component
      *
-     * @param attr  @see {@link Where#attr}
-     * @param value @see {@link Where#value}
+     * @param column  {@link Where#Where(String, Object)}
+     * @param value {@link Where#Where(String, Object)}
      * @return this
      */
-    public SelectBuilder where(String attr, Object value) {
-        this.wheres.add(new Where(attr, value));
+    public SelectBuilder where(String column, Object value) {
+        this.wheres.add(new Where(column, value));
         return this;
     }
 
     /**
      * adds a table join between an existing table and a new one
      *
-     * @param joinType      @see {@link Join#joinType}
-     * @param ohterTable    @see {@link Join#otherTable}
-     * @param alias         @see {@link Join#otherTable}
-     * @param joinCondition @see {@link Join#joinCondition}
+     * @param joinType      {@link Join#Join(JoinType, From, String)}
+     * @param ohterTable    {@link Join#Join(JoinType, From, String)}
+     * @param alias         {@link Join#Join(JoinType, From, String)}
+     * @param joinCondition {@link Join#Join(JoinType, From, String)}
      *                      must match to the name / alias of the tables
      * @return this
      */
@@ -157,12 +157,12 @@ public class SelectBuilder extends SQLBuilder {
     /**
      * adds the ORDER BY component
      *
-     * @param attr      @see {@link OrderBy#attr}
-     * @param orderType @see {@link OrderBy#orderType}
+     * @param column      {@link OrderBy#OrderBy(String, OrderType)}
+     * @param orderType {@link OrderBy#OrderBy(String, OrderType)}
      * @return this
      */
-    public SelectBuilder orderBy(String attr, OrderType orderType) {
-        this.orderBy = new OrderBy(attr, orderType);
+    public SelectBuilder orderBy(String column, OrderType orderType) {
+        this.orderBy = new OrderBy(column, orderType);
         return this;
     }
 

@@ -6,32 +6,16 @@ package de.janek.components;
  *
  * @author Janek7
  */
-public class Where extends Component {
-
-    private String attr;
-    private Object value;
+public final class Where extends ColumnValuePair {
 
     /**
      * creates a new where component
      *
-     * @param attr  filter attribute
+     * @param column  filter attribute
      * @param value filter value
      */
-    public Where(String attr, Object value) {
-        this.attr = attr;
-        this.value = value;
-    }
-
-    /**
-     * @see Component#getString()
-     */
-    @Override
-    public String getString() {
-        return attr;
-    }
-
-    public Object getValue() {
-        return value;
+    public Where(String column, Object value) {
+        super(column, value);
     }
 
 }

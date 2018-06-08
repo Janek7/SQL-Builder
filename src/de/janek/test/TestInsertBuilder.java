@@ -51,4 +51,12 @@ public class TestInsertBuilder extends TestCase {
 
     }
 
+    @Test (expected = SQLStatementException.class)
+    public void testMissingInto() throws SQLStatementException, SQLException {
+
+        insertBuilder.insert("name", "Test");
+        insertBuilder.execute();
+
+    }
+
 }

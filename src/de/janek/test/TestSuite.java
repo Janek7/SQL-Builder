@@ -7,6 +7,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         TestDataBaseConnection.class,
         TestSelectBuilder.class,
+        TestInsertBuilder.class,
+        TestUpdateBuilder.class
 })
 
 /**

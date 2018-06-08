@@ -5,7 +5,7 @@ package de.janek;
  *
  * @author Janek7
  */
-public class SQLStatementException extends Exception {
+public final class SQLStatementException extends Exception {
 
     /**
      * creates a new SQLStatementException

@@ -12,17 +12,17 @@ import de.janek.components.Component;
  */
 public final class Select extends Component {
 
-    private String attr;
+    private String column;
     private String as;
 
     /**
      * creates a new select component
      *
-     * @param attr selected attribute
+     * @param column selected column
      * @param as   name of the attribute in resultset
      */
-    public Select(String attr, String as) {
-        this.attr = attr;
+    public Select(String column, String as) {
+        this.column = column;
         this.as = as;
     }
 
@@ -31,11 +31,11 @@ public final class Select extends Component {
      */
     @Override
     public String getString() {
-        return attr + (as != null ? " as " + as : "");
+        return column + (as != null ? " as " + as : "");
     }
 
-    public String getAttr() {
-        return attr;
+    public String getColumn() {
+        return column;
     }
 
 }

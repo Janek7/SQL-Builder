@@ -7,7 +7,7 @@ import de.janek.components.Component;
  *
  * @author Janek7
  */
-public class Join extends Component {
+public final class Join extends Component {
 
     private JoinType joinType;
     private From otherTable;

@@ -10,17 +10,17 @@ import de.janek.components.Component;
  */
 public final class OrderBy extends Component {
 
-    private String attr;
+    private String column;
     private OrderType orderType;
 
     /**
      * creates a new order by component
      *
-     * @param attr      attribute to sort by
+     * @param column      attribute to sort by
      * @param orderType order direction
      */
-    public OrderBy(String attr, OrderType orderType) {
-        this.attr = attr;
+    public OrderBy(String column, OrderType orderType) {
+        this.column = column;
         this.orderType = orderType;
     }
 
@@ -29,10 +29,10 @@ public final class OrderBy extends Component {
      */
     @Override
     public String getString() {
-        return "ORDER BY " + attr + " " + orderType;
+        return "ORDER BY " + column + " " + orderType;
     }
 
-    public String getAttr() {
-        return attr;
+    public String getColumn() {
+        return column;
     }
 }

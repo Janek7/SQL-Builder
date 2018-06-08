@@ -2,7 +2,7 @@ package de.janek.sqlBuilder;
 
 import de.janek.DataBaseConnection;
 import de.janek.SQLStatementException;
-import de.janek.components.insert.Insert;
+import de.janek.components.Insert;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Janek7
  */
-public class InsertBuilder extends SQLBuilder {
+public final class InsertBuilder extends SQLBuilder {
 
     private String into;
     private List<Insert> inserts = new ArrayList<>();
@@ -33,6 +33,7 @@ public class InsertBuilder extends SQLBuilder {
     public ResultSet execute() throws SQLStatementException, SQLException {
 
         final StringBuilder statement = new StringBuilder("INSERT INTO ");
+        if (into == null) throw new SQLStatementException("no table for insert selected");
         statement.append(into).append(" (");
 
         inserts.forEach(insert -> statement.append(insert.getColumn()).append(", "));
@@ -68,8 +69,9 @@ public class InsertBuilder extends SQLBuilder {
     /**
      * adds an new column value pair to insert
      *
+     * @param column {@link Insert#Insert(String, Object)}
+     * @param value  {@link Insert#Insert(String, Object)}
      * @return this
-     * @see Insert#Insert(String, Object)
      */
     public InsertBuilder insert(String column, Object value) {
         inserts.add(new Insert(column, value));

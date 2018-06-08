@@ -3,7 +3,7 @@ package de.janek;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Utils {
+public final class Utils {
 
     /**
      * provides the size of a jdbc resultset
