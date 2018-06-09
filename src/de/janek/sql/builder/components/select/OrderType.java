@@ -1,4 +1,4 @@
-package de.janek.components.select;
+package de.janek.sql.builder.components.select;
 
 /**
  * order types of 'ORDER BY' in a select statement

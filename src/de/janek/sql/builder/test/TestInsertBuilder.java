@@ -1,9 +1,9 @@
-package de.janek.test;
+package de.janek.sql.builder.test;
 
-import de.janek.SQLStatementException;
-import de.janek.components.select.OrderType;
-import de.janek.sqlBuilder.InsertBuilder;
-import de.janek.sqlBuilder.SelectBuilder;
+import de.janek.sql.builder.SQLStatementException;
+import de.janek.sql.builder.components.select.OrderType;
+import de.janek.sql.builder.sqlBuilders.InsertBuilder;
+import de.janek.sql.builder.sqlBuilders.SelectBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,10 +26,13 @@ public class TestInsertBuilder extends TestCase {
         insertBuilder = new InsertBuilder(dataBaseConnection);
     }
 
+    /**
+     * tests a normal value
+     */
     @Test
     public void testInsert() {
 
-        insertBuilder.into("Menschen").insert("name", "Leon").insert("age", 18);
+        insertBuilder.into("Menschen").value("name", "Leon").value("age", 18);
         try {
             insertBuilder.execute();
         } catch (SQLStatementException | SQLException e) {
@@ -38,9 +41,8 @@ public class TestInsertBuilder extends TestCase {
         }
 
         SelectBuilder selectBuilder = new SelectBuilder(dataBaseConnection);
-        ResultSet res = null;
         try {
-            res = selectBuilder.from("Menschen").orderBy("id", OrderType.DESC).execute();
+            ResultSet res = selectBuilder.from("Menschen").orderBy("id", OrderType.DESC).execute();
             res.next();
             assertEquals("Leon", res.getString("name"));
             assertEquals(18, res.getInt("age"));
@@ -51,10 +53,16 @@ public class TestInsertBuilder extends TestCase {
 
     }
 
+    /**
+     * tests the occurence from a SQLStatementException if no table to value in is selected
+     *
+     * @throws SQLStatementException statement error
+     * @throws SQLException          sql error
+     */
     @Test (expected = SQLStatementException.class)
     public void testMissingInto() throws SQLStatementException, SQLException {
 
-        insertBuilder.insert("name", "Test");
+        insertBuilder.value("name", "Test");
         insertBuilder.execute();
 
     }

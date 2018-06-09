@@ -1,4 +1,4 @@
-package de.janek.components;
+package de.janek.sql.builder.components;
 
 /**
  * Symbolizes a filter of the dataset

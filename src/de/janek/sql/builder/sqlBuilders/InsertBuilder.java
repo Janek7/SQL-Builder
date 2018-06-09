@@ -1,10 +1,9 @@
-package de.janek.sqlBuilder;
+package de.janek.sql.builder.sqlBuilders;
 
-import de.janek.DataBaseConnection;
-import de.janek.SQLStatementException;
-import de.janek.components.Insert;
+import de.janek.sql.builder.DataBaseConnection;
+import de.janek.sql.builder.SQLStatementException;
+import de.janek.sql.builder.components.InsertValue;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +13,10 @@ import java.util.List;
  *
  * @author Janek7
  */
-public final class InsertBuilder extends SQLBuilder {
+public class InsertBuilder extends SQLBuilder<Void> {
 
     private String into;
-    private List<Insert> inserts = new ArrayList<>();
+    private List<InsertValue> insertValues = new ArrayList<>();
 
     /**
      * @see SQLBuilder#SQLBuilder(DataBaseConnection)
@@ -30,19 +29,19 @@ public final class InsertBuilder extends SQLBuilder {
      * @see SQLBuilder#execute()
      */
     @Override
-    public ResultSet execute() throws SQLStatementException, SQLException {
+    public Void execute() throws SQLStatementException, SQLException {
 
         final StringBuilder statement = new StringBuilder("INSERT INTO ");
-        if (into == null) throw new SQLStatementException("no table for insert selected");
+        if (into == null) throw new SQLStatementException("no table for value selected");
         statement.append(into).append(" (");
 
-        inserts.forEach(insert -> statement.append(insert.getColumn()).append(", "));
+        insertValues.forEach(insertValue -> statement.append(insertValue.getColumn()).append(", "));
         statement.setLength(statement.length() - 2);
         statement.append(") VALUES (");
         final List<Object> insertValues = new ArrayList<>();
-        inserts.forEach(insert -> {
+        this.insertValues.forEach(insertValue -> {
             statement.append("?, ");
-            insertValues.add(insert.getValue());
+            insertValues.add(insertValue.getValue());
         });
         statement.setLength(statement.length() - 2);
         statement.append(") ");
@@ -58,7 +57,7 @@ public final class InsertBuilder extends SQLBuilder {
     /**
      * defines the target table
      *
-     * @param into table to insert
+     * @param into table to value
      * @return this
      */
     public InsertBuilder into(String into) {
@@ -67,14 +66,14 @@ public final class InsertBuilder extends SQLBuilder {
     }
 
     /**
-     * adds an new column value pair to insert
+     * adds an new column value pair to value
      *
-     * @param column {@link Insert#Insert(String, Object)}
-     * @param value  {@link Insert#Insert(String, Object)}
+     * @param column {@link InsertValue#InsertValue(String, Object)}
+     * @param value  {@link InsertValue#InsertValue(String, Object)}
      * @return this
      */
-    public InsertBuilder insert(String column, Object value) {
-        inserts.add(new Insert(column, value));
+    public InsertBuilder value(String column, Object value) {
+        insertValues.add(new InsertValue(column, value));
         return this;
     }
 

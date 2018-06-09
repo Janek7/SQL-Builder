@@ -1,4 +1,4 @@
-package de.janek.components.select;
+package de.janek.sql.builder.components.select;
 
 /**
  * enumeration of basic join types in MySQL

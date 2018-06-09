@@ -1,8 +1,8 @@
-package de.janek.test;
+package de.janek.sql.builder.test;
 
-import de.janek.SQLStatementException;
-import de.janek.sqlBuilder.SelectBuilder;
-import de.janek.sqlBuilder.UpdateBuilder;
+import de.janek.sql.builder.SQLStatementException;
+import de.janek.sql.builder.sqlBuilders.UpdateBuilder;
+import de.janek.sql.builder.sqlBuilders.SelectBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,6 +11,11 @@ import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * test cases for {@link UpdateBuilder}
+ *
+ * @author Janek7
+ */
 public class TestUpdateBuilder extends TestCase {
 
     private UpdateBuilder updateBuilder;
@@ -20,6 +25,9 @@ public class TestUpdateBuilder extends TestCase {
         updateBuilder = new UpdateBuilder(dataBaseConnection);
     }
 
+    /**
+     * tests a normal update
+     */
     @Test
     public void testUpdate() {
 
@@ -35,6 +43,12 @@ public class TestUpdateBuilder extends TestCase {
 
     }
 
+    /**
+     * tests the occurence from a SQLStatementException if no table to update is selected
+     *
+     * @throws SQLStatementException statement error
+     * @throws SQLException          sql error
+     */
     @Test (expected = SQLStatementException.class)
     public void testMissingTable() throws SQLStatementException, SQLException {
 
@@ -43,6 +57,12 @@ public class TestUpdateBuilder extends TestCase {
 
     }
 
+    /**
+     * tests the occurence from a SQLStatementException if nothing to update is set
+     *
+     * @throws SQLStatementException statement error
+     * @throws SQLException          sql error
+     */
     @Test (expected = SQLStatementException.class)
     public void testMissingSets() throws SQLStatementException, SQLException {
 

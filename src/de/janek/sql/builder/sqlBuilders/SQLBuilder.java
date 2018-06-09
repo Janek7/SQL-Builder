@@ -1,19 +1,18 @@
-package de.janek.sqlBuilder;
+package de.janek.sql.builder.sqlBuilders;
 
-import de.janek.DataBaseConnection;
-import de.janek.SQLStatementException;
+import de.janek.sql.builder.DataBaseConnection;
+import de.janek.sql.builder.SQLStatementException;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Base class for Statement Builder Classes
+ * Base class for SQL Statement Builder Classes
  *
  * @author Janek7
  */
-public abstract class SQLBuilder {
+public abstract class SQLBuilder<R> {
 
     DataBaseConnection dataBaseConnection;
     PreparedStatement pStmt;
@@ -30,11 +29,11 @@ public abstract class SQLBuilder {
     /**
      * creates and executes the statement and provides the result as a ResultSet
      *
-     * @return resultset
+     * @return return type
      * @throws SQLStatementException statement error
      * @throws SQLException          sql error
      */
-    public abstract ResultSet execute() throws SQLStatementException, SQLException;
+    public abstract R execute() throws SQLStatementException, SQLException;
 
     /**
      * fills the ? parameters of a given prepared statement with values

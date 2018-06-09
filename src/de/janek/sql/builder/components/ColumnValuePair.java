@@ -1,4 +1,4 @@
-package de.janek.components;
+package de.janek.sql.builder.components;
 
 /**
  * Symbolizes a pair of an attribute / column and a value

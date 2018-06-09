@@ -1,6 +1,6 @@
-package de.janek.test;
+package de.janek.sql.builder.test;
 
-import de.janek.DataBaseConnection;
+import de.janek.sql.builder.DataBaseConnection;
 import org.junit.Test;
 
 import java.sql.SQLException;

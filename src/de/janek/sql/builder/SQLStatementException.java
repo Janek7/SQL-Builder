@@ -1,4 +1,4 @@
-package de.janek;
+package de.janek.sql.builder;
 
 /**
  * Exception for logical errors while building the MySQL statements

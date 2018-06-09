@@ -1,6 +1,6 @@
-package de.janek.components.select;
+package de.janek.sql.builder.components.select;
 
-import de.janek.components.Component;
+import de.janek.sql.builder.components.Component;
 
 /**
  * Symbolizes the selection of a attribute in a SELECT statement

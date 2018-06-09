@@ -1,7 +1,7 @@
-package de.janek.test;
+package de.janek.sql.builder.test;
 
-import de.janek.DataBaseConnection;
-import de.janek.Utils;
+import de.janek.sql.builder.DataBaseConnection;
+import de.janek.sql.builder.Utils;
 import org.junit.After;
 import org.junit.Before;
 

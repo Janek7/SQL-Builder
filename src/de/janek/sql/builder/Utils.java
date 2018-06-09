@@ -1,4 +1,4 @@
-package de.janek;
+package de.janek.sql.builder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -1,9 +1,10 @@
-package de.janek.test;
+package de.janek.sql.builder.test;
 
-import de.janek.components.select.JoinType;
-import de.janek.components.select.OrderType;
-import de.janek.SQLStatementException;
-import de.janek.sqlBuilder.SelectBuilder;
+import de.janek.sql.builder.components.select.JoinType;
+import de.janek.sql.builder.components.select.OrderType;
+import de.janek.sql.builder.SQLStatementException;
+import de.janek.sql.builder.sqlBuilders.SelectBuilder;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,25 +27,27 @@ public class TestSelectBuilder extends TestCase {
         selectBuilder = new SelectBuilder(dataBaseConnection);
     }
 
+    /**
+     * tests a normal select
+     */
     @Test
     public void testSelect() {
 
         selectBuilder.select("name").from("Menschen").where("id", 1);
-        ResultSet res = null;
         try {
-            res = selectBuilder.execute();
-        } catch (SQLException | SQLStatementException e) {
-            assert false;
-        }
-        try {
+            ResultSet res = selectBuilder.execute();
             res.next();
             assertEquals("Janek", res.getString("name"));
-        } catch (SQLException e) {
+        } catch (SQLException | SQLStatementException e) {
             e.printStackTrace();
+            assert false;
         }
 
     }
 
+    /**
+     * tests the size of selected columns
+     */
     @Test
     public void testSelectSize() {
 
@@ -73,6 +76,12 @@ public class TestSelectBuilder extends TestCase {
 
     }
 
+    /**
+     * tests the occurence from a SQLStatementException if no table to select from is selected
+     *
+     * @throws SQLStatementException statement error
+     * @throws SQLException          sql error
+     */
     @Test(expected = SQLStatementException.class)
     public void testMissingFrom() throws SQLStatementException, SQLException {
 
@@ -81,13 +90,16 @@ public class TestSelectBuilder extends TestCase {
 
     }
 
+    /**
+     * tests a normal join
+     */
     @Test
     public void testJoin() {
 
         selectBuilder.select("name").select("note").from("Menschen").join(JoinType.JOIN, "Noten", "id = mensch_id");
         try {
             ResultSet res = selectBuilder.execute();
-            assertEquals(2, utils.getResultSize(res));
+            Assert.assertEquals(2, utils.getResultSize(res));
         } catch (SQLStatementException | SQLException e) {
             e.printStackTrace();
             assert false;
@@ -95,13 +107,16 @@ public class TestSelectBuilder extends TestCase {
 
     }
 
+    /**
+     * tests a left join
+     */
     @Test
     public void testLeftJoin() {
 
         selectBuilder.select("name").from("Menschen").join(JoinType.LEFT_JOIN, "Noten", "id = mensch_id");
         try {
             ResultSet res = selectBuilder.execute();
-            assertEquals(4, utils.getResultSize(res));
+            Assert.assertEquals(4, utils.getResultSize(res));
         } catch (SQLStatementException | SQLException e) {
             e.printStackTrace();
             assert false;
@@ -109,13 +124,16 @@ public class TestSelectBuilder extends TestCase {
 
     }
 
+    /**
+     * tests a right join
+     */
     @Test
     public void testRightJoin() {
 
         selectBuilder.select("name").from("Menschen").join(JoinType.RIGHT_JOIN, "Noten", "id = mensch_id");
         try {
             ResultSet res = selectBuilder.execute();
-            assertEquals(3, utils.getResultSize(res));
+            Assert.assertEquals(3, utils.getResultSize(res));
         } catch (SQLStatementException | SQLException e) {
             e.printStackTrace();
             assert false;
@@ -123,6 +141,9 @@ public class TestSelectBuilder extends TestCase {
 
     }
 
+    /**
+     * tests order by
+     */
     @Test
     public void testOrderBy() {
 
@@ -149,6 +170,11 @@ public class TestSelectBuilder extends TestCase {
 
     }
 
+    /**
+     * tests the occurence from a SQLStatementException if the column to order by isnt selected
+     * @throws SQLStatementException statement error
+     * @throws SQLException          sql error
+     */
     @Test(expected = SQLStatementException.class)
     public void testOrderByFail() throws SQLStatementException, SQLException {
 

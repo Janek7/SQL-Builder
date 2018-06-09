@@ -1,9 +1,9 @@
-package de.janek.sqlBuilder;
+package de.janek.sql.builder.sqlBuilders;
 
-import de.janek.DataBaseConnection;
-import de.janek.components.select.*;
-import de.janek.SQLStatementException;
-import de.janek.components.Where;
+import de.janek.sql.builder.DataBaseConnection;
+import de.janek.sql.builder.SQLStatementException;
+import de.janek.sql.builder.components.Where;
+import de.janek.sql.builder.components.select.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,11 +15,11 @@ import java.util.List;
  *
  * @author Janek7
  */
-public final class SelectBuilder extends SQLBuilder {
+public class SelectBuilder extends SQLBuilder<ResultSet> {
 
-    private List<Select> selects = new ArrayList<>();
+    private List<Select> selections = new ArrayList<>();
     private From from;
-    private List<Where> wheres = new ArrayList<>();
+    private List<Where> filters = new ArrayList<>();
     private List<Join> joins = new ArrayList<>();
     private OrderBy orderBy;
 
@@ -39,8 +39,8 @@ public final class SelectBuilder extends SQLBuilder {
         final StringBuilder statement = new StringBuilder("SELECT ");
 
         //SELECT
-        if (selects.size() > 0) {
-            selects.forEach(select -> statement.append(select.getString()).append(", "));
+        if (selections.size() > 0) {
+            selections.forEach(select -> statement.append(select.getString()).append(", "));
             statement.setLength(statement.length() - 2);
         } else statement.append("*");
         statement.append(" ");
@@ -56,9 +56,9 @@ public final class SelectBuilder extends SQLBuilder {
 
         //WHERE
         List<Object> whereValues = new ArrayList<>();
-        if (wheres.size() > 0)
-            wheres.forEach(where -> {
-                        statement.append(where == wheres.get(0) ? "WHERE " : "AND ").append(where.getColumn()).append(" = ? ");
+        if (filters.size() > 0)
+            filters.forEach(where -> {
+                        statement.append(where == filters.get(0) ? "WHERE " : "AND ").append(where.getColumn()).append(" = ? ");
                         whereValues.add(where.getValue());
                     }
             );
@@ -66,17 +66,16 @@ public final class SelectBuilder extends SQLBuilder {
         //ORDER BY
         if (orderBy != null) {
             boolean orderByInSelect = false;
-            for (Select select : selects)
+            for (Select select : selections)
                 if (select.getColumn().equalsIgnoreCase(orderBy.getColumn())) orderByInSelect = true;
             if (!orderByInSelect) {
-                if (selects.size() != 0) throw new SQLStatementException("order by element is not part of SELECT");
+                if (selections.size() != 0) throw new SQLStatementException("order by element is not part of SELECT");
             }
             statement.append(orderBy.getString());
         }
 
         pStmt = dataBaseConnection.prepareStatement(statement.toString());
         setPreparedStatementParameters(pStmt, whereValues);
-        System.out.println(pStmt);
 
         return pStmt.executeQuery();
 
@@ -86,11 +85,11 @@ public final class SelectBuilder extends SQLBuilder {
      * adds a select component
      *
      * @param column {@link Select#Select(String, String)}
-     * @param as   {@link Select#Select(String, String)}
+     * @param as     {@link Select#Select(String, String)}
      * @return this
      */
     public SelectBuilder select(String column, String as) {
-        selects.add(new Select(column, as));
+        selections.add(new Select(column, as));
         return this;
     }
 
@@ -123,13 +122,22 @@ public final class SelectBuilder extends SQLBuilder {
     /**
      * adds a WHERE component
      *
-     * @param column  {@link Where#Where(String, Object)}
-     * @param value {@link Where#Where(String, Object)}
+     * @param column {@link Where#Where(String, Object)}
+     * @param value  {@link Where#Where(String, Object)}
      * @return this
      */
     public SelectBuilder where(String column, Object value) {
-        this.wheres.add(new Where(column, value));
+        this.filters.add(new Where(column, value));
         return this;
+    }
+
+    /**
+     * checks if the select statement has where components
+     *
+     * @return result
+     */
+    public boolean hasWhere() {
+        return filters.size() > 0;
     }
 
     /**
@@ -157,7 +165,7 @@ public final class SelectBuilder extends SQLBuilder {
     /**
      * adds the ORDER BY component
      *
-     * @param column      {@link OrderBy#OrderBy(String, OrderType)}
+     * @param column    {@link OrderBy#OrderBy(String, OrderType)}
      * @param orderType {@link OrderBy#OrderBy(String, OrderType)}
      * @return this
      */

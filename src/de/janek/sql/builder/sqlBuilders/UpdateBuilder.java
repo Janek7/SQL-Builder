@@ -1,11 +1,10 @@
-package de.janek.sqlBuilder;
+package de.janek.sql.builder.sqlBuilders;
 
-import de.janek.DataBaseConnection;
-import de.janek.SQLStatementException;
-import de.janek.components.Set;
-import de.janek.components.Where;
+import de.janek.sql.builder.DataBaseConnection;
+import de.janek.sql.builder.SQLStatementException;
+import de.janek.sql.builder.components.Update;
+import de.janek.sql.builder.components.Where;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +14,11 @@ import java.util.List;
  *
  * @author Janek7
  */
-public final class UpdateBuilder extends SQLBuilder {
+public class UpdateBuilder extends SQLBuilder<Void> {
 
     private String table;
-    private List<Set> sets = new ArrayList<>();
-    private List<Where> wheres = new ArrayList<>();
+    private List<Update> updates = new ArrayList<>();
+    private List<Where> filters = new ArrayList<>();
 
     /**
      * creates a new Update Builder
@@ -34,17 +33,17 @@ public final class UpdateBuilder extends SQLBuilder {
      * @see SQLBuilder#execute()
      */
     @Override
-    public ResultSet execute() throws SQLStatementException, SQLException {
+    public Void execute() throws SQLStatementException, SQLException {
 
         if (table == null) throw new SQLStatementException("no table to update selected");
         final StringBuilder statement = new StringBuilder("UPDATE ").append(table).append(" SET ");
         List<Object> values = new ArrayList<>();
 
         //SET
-        if (sets.size() > 0) {
-            sets.forEach(set -> {
-                statement.append(set.getColumn()).append(" = ?, ");
-                values.add(set.getValue());
+        if (updates.size() > 0) {
+            updates.forEach(update -> {
+                statement.append(update.getColumn()).append(" = ?, ");
+                values.add(update.getValue());
             });
             statement.setLength(statement.length() - 2);
         } else {
@@ -53,24 +52,24 @@ public final class UpdateBuilder extends SQLBuilder {
         statement.append(" ");
 
         //WHERE
-        if (wheres.size() > 0) {
-            wheres.forEach(where -> {
-                        statement.append(where == wheres.get(0) ? "WHERE " : "AND ").append(where.getColumn()).append(" = ? ");
-                        values.add(where.getValue());
+        if (filters.size() > 0) {
+            filters.forEach(filter -> {
+                        statement.append(filter == filters.get(0) ? "WHERE " : "AND ")
+                                .append(filter.getColumn()).append(" = ? ");
+                        values.add(filter.getValue());
                     }
             );
         }
 
         pStmt = dataBaseConnection.prepareStatement(statement.toString());
         setPreparedStatementParameters(pStmt, values);
-        System.out.println(pStmt);
 
         pStmt.executeUpdate();
         return null;
     }
 
     /**
-     * sets the target table
+     * updates the target table
      *
      * @param table table to update
      * @return this
@@ -83,12 +82,12 @@ public final class UpdateBuilder extends SQLBuilder {
     /**
      * add an attribute which get updated with the given value
      *
-     * @param column {@link Set#Set(String, Object)}
-     * @param value  {@link Set#Set(String, Object)}
+     * @param column {@link Update#Update(String, Object)}
+     * @param value  {@link Update#Update(String, Object)}
      * @return this
      */
     public UpdateBuilder set(String column, Object value) {
-        sets.add(new Set(column, value));
+        updates.add(new Update(column, value));
         return this;
     }
 
@@ -100,7 +99,7 @@ public final class UpdateBuilder extends SQLBuilder {
      * @return this
      */
     public UpdateBuilder where(String column, Object value) {
-        wheres.add(new Where(column, value));
+        filters.add(new Where(column, value));
         return this;
     }
 

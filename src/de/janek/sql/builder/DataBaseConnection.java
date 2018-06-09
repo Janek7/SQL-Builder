@@ -1,4 +1,4 @@
-package de.janek;
+package de.janek.sql.builder;
 
 import java.io.FileInputStream;
 import java.io.IOException;

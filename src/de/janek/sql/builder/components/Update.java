@@ -1,6 +1,6 @@
-package de.janek.components;
+package de.janek.sql.builder.components;
 
-public final class Set extends ColumnValuePair {
+public final class Update extends ColumnValuePair {
 
     /**
      * creates an new attr value pair to update
@@ -8,7 +8,7 @@ public final class Set extends ColumnValuePair {
      * @param column  attr
      * @param value value
      */
-    public Set(String column, Object value) {
+    public Update(String column, Object value) {
         super(column, value);
     }
 
